@@ -13,18 +13,21 @@ class SearchTableViewController: UITableViewController, UISearchResultsUpdating 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        motionManager.deviceMotionUpdateInterval = 0.01
-        motionManager.startDeviceMotionUpdatesToQueue(NSOperationQueue.currentQueue(), withHandler:{
-            deviceManager, error in
-            println("Test") // no print
-        })
-        println(motionManager.deviceMotionActive) // print false
+      
         if motionManager.deviceMotionAvailable {
-            motionManager.deviceMotionUpdateInterval = 0.01
+            motionManager.deviceMotionUpdateInterval = 0.1
             motionManager.startDeviceMotionUpdatesToQueue(NSOperationQueue.mainQueue()) {
                 [weak self] (data: CMDeviceMotion!, error: NSError!) in
                 
                 self!.rotation = atan2(data.gravity.x, data.gravity.y) - M_PI
+                
+                if (self!.rotation < -0.3 && self!.rotation > -6.0) {
+                    if (self!.rotation < -3.0 ) {
+                        self!.rotation = -6.0
+                    } else {
+                        self!.rotation = -0.3
+                    }
+                }
             }
         }
 
@@ -47,8 +50,13 @@ class SearchTableViewController: UITableViewController, UISearchResultsUpdating 
         // Reload the table
         self.tableView.reloadData()
     }
+    override func scrollViewDidScroll(scrollView: UIScrollView) {
+        self.tableView.reloadData()
+    }
     
     func update() {
+        println("update")
+        println(self.rotation)
         self.tableView.reloadData()
     }
     
@@ -77,8 +85,11 @@ class SearchTableViewController: UITableViewController, UISearchResultsUpdating 
     
         searchCell.imgTrack.layer.borderWidth = 3.0
 
-        searchCell.transform = CGAffineTransformMakeRotation(CGFloat(self.rotation))
+        
 
+        UIView.animateWithDuration(0.2, delay: 0.0, options: UIViewAnimationOptions.CurveEaseIn, animations: { () -> Void in
+            searchCell.transform = CGAffineTransformMakeRotation(CGFloat(-self.rotation))
+        }, completion: nil)
         return searchCell
     }
     
