@@ -21,13 +21,13 @@ class SearchTableViewController: UITableViewController, UISearchResultsUpdating 
                 
                 self!.rotation = atan2(data.gravity.x, data.gravity.y) - M_PI
                 
-                if (self!.rotation < -0.3 && self!.rotation > -6.0) {
-                    if (self!.rotation < -3.0 ) {
-                        self!.rotation = -6.0
-                    } else {
-                        self!.rotation = -0.3
-                    }
-                }
+//                if (self!.rotation < -0.3 && self!.rotation > -6.0) {
+//                    if (self!.rotation < -3.0 ) {
+//                        self!.rotation = -6.0
+//                    } else {
+//                        self!.rotation = -0.3
+//                    }
+//                }
             }
         }
 
@@ -55,8 +55,6 @@ class SearchTableViewController: UITableViewController, UISearchResultsUpdating 
     }
     
     func update() {
-        println("update")
-        println(self.rotation)
         self.tableView.reloadData()
     }
     
@@ -82,13 +80,10 @@ class SearchTableViewController: UITableViewController, UISearchResultsUpdating 
         searchCell.labelTrack.text = "Test Cell " + String(indexPath.row + 1)
         searchCell.labelArtistAlbum.text = "Subtitle " + String(indexPath.row + 1)
         searchCell.imgTrack.layer.cornerRadius = searchCell.imgTrack.frame.size.width / 2
-    
         searchCell.imgTrack.layer.borderWidth = 3.0
-
         
-
         UIView.animateWithDuration(0.2, delay: 0.0, options: UIViewAnimationOptions.CurveEaseIn, animations: { () -> Void in
-            searchCell.transform = CGAffineTransformMakeRotation(CGFloat(-self.rotation))
+            searchCell.transform = CGAffineTransformMakeRotation(CGFloat(self.rotation))
         }, completion: nil)
         return searchCell
     }
